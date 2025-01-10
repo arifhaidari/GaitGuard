@@ -1,1 +1,1 @@
-# GaitGuard (Under Development)
+# Gait Stride Sense (Under Development)
