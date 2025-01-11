@@ -6,5 +6,10 @@ the dataset that i have downloaded has 756 file and it is around 600 MB. I want 
 the dataset that I use:
 files GP1_0.6_force.csv and GP1_0.6_marker.csv
 
+dataset used for MLPClassifier neural network:
+GP1_0.6_force.csv
+GP1_0.7_force.csv
+GP1_0.8_force.csv
+
 Gait Phase database link:
 https://www.mad.tf.fau.de/research/activitynet/gaitphase-database/
