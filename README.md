@@ -2,51 +2,73 @@
 
 ## Overview
 
-This project focuses on **gait phase analysis** using machine learning and deep learning techniques. The primary objective is to classify gait phases or walking conditions (e.g., slow, medium, and fast walking) using force data captured from a split-belt treadmill. This analysis is crucial in applications such as:
+This project focuses on **gait phase analysis** using machine learning and deep learning techniques to classify walking conditions (e.g., slow, medium, and fast walking) and predict gait phases. The force data used in this project was captured from a **split-belt treadmill** synchronized with a motion capture system.
 
-- Rehabilitation monitoring
-- Detection of abnormal gait
-- Performance assessment in athletes
+### Applications:
 
-The project leverages machine learning algorithms like **MLPClassifier (and many more classification and regression algorithms)** and advanced techniques such as **LSTM** and **Deep Neural Networks (DNNs)** to analyze and predict gait patterns. The final trained **MLPClassifier** model was saved and used for predictions, with detailed steps for preprocessing and deployment.
+- **Rehabilitation Monitoring**: Track recovery progress in patients with gait disorders.
+- **Gait Abnormality Detection**: Identify deviations in normal walking patterns.
+- **Performance Assessment**: Analyze gait in athletes for training optimization.
+
+This project leverages **classification and regression algorithms** such as **MLPClassifier**, **LSTM**, and **Deep Neural Networks (DNNs)**. The final trained **MLPClassifier** was selected as the best-performing model and is used for deployment and prediction.
 
 ---
 
 ## Key Features
 
-1. **Dataset**:
+### Dataset Overview
 
-about dataset and sample of dataset:
-the dataset that i have downloaded has 756 file and it is around 600 MB. I want to use small about of the dataset because data is just a fun project to learn to showcase my skills and also my processing power is very limited.
+The dataset was sourced from the **GaitPhase Database** and includes data collected using a **Qualisys motion capture system** and an **instrumented split-belt treadmill**. The dataset contains 756 files (~600 MB), with a subset used for training due to hardware limitations.
 
-the dataset that I used for classification and regression:
-files GP1_0.6_force.csv and GP1_0.6_marker.csv
+1. **Dataset used for initial experiments (classification and regression)**:
 
-dataset used for MLPClassifier neural network and deep learning:
-GP1_0.6_force.csv
-GP1_0.7_force.csv
-GP1_0.8_force.csv
+   - Files: `GP1_0.6_force.csv`, `GP1_0.6_marker.csv`
 
-- Data collected using a Qualisys motion capture system and instrumented treadmill.
-- Three datasets representing different walking speeds: `GP1_0.6_force.csv`, `GP1_0.7_force.csv`, and `GP1_0.8_force.csv`.
-- Over 30 features including ground reaction forces (x, y, z components) for two force plates.
+2. **Dataset used for MLPClassifier and Deep Learning**:
 
-2. **Problem Solved**:
+   - Files: `GP1_0.6_force.csv`, `GP1_0.7_force.csv`, `GP1_0.8_force.csv`
 
-   - Classification of walking speeds (`Slow`, `Medium`, `Fast`).
-   - Prediction of gait phases using force data.
+3. **Key Data Characteristics**:
+   - Over 30 features, including ground reaction forces in x, y, z axes for two force plates.
+   - Walking conditions represented as labels (`Slow`, `Medium`, `Fast`).
 
-3. **Models Used**:
+---
 
-   - Machine Learning:
-     - **MLPClassifier** (best performing).
-   - Deep Learning:
-     - **LSTM** for time-series analysis.
-     - **DNN** for comparison with traditional ML methods.
+## Problem Statement
 
-4. **Deployment**:
-   - Saved the trained **MLPClassifier** for future predictions.
-   - Detailed steps for loading and using the saved model.
+### Objectives:
+
+1. **Classification**:
+   - Classify walking speeds (`Slow`, `Medium`, `Fast`) based on force data.
+2. **Regression**:
+   - Predict numerical gait parameters such as step duration or force magnitude.
+
+---
+
+## Models and Techniques
+
+1. **Machine Learning Models**:
+
+   - **MLPClassifier**:
+     - Achieved the highest accuracy (~77%).
+     - Hyperparameters:
+       - Solver: `adam`
+       - Hidden Layers: `(200, 100, 55)`
+       - Activation: `tanh`
+       - Max Iterations: `50`
+
+2. **Deep Learning Models**:
+
+   - **LSTM**:
+     - Used for time-series data to analyze temporal dependencies.
+     - Accuracy: ~33% (due to limited time-step configuration).
+   - **DNN**:
+     - Accuracy: ~72%
+     - Achieved moderate results compared to MLPClassifier.
+
+3. **Deployment**:
+   - Saved the trained MLPClassifier model using `joblib`.
+   - Recreated preprocessing pipelines for new data predictions.
 
 ---
 
@@ -72,11 +94,10 @@ GP1_0.8_force.csv
 
 ## Steps Followed
 
-### 1. **Data Import and Preprocessing**
+### 1. Data Import and Preprocessing
 
-- Imported datasets representing different walking speeds.
-- Assigned meaningful labels (`Slow`, `Medium`, `Fast`) for classification.
-- Combined and scaled the data using `StandardScaler`.
+- Imported datasets representing walking speeds (`Slow`, `Medium`, `Fast`).
+- Combined the datasets and scaled features using `StandardScaler`.
 
 **Code Snippet**:
 
@@ -88,98 +109,64 @@ X_train_scaled = scaler.fit_transform(X_train)
 
 ---
 
-### 2. **Exploratory Data Analysis (EDA)**
+### 2. Exploratory Data Analysis (EDA)
 
-- Visualized feature distributions and label balance.
-- Correlation heatmap to understand feature relationships.
-
-**Visualizations**:
-
-- Feature distributions using `seaborn`.
-- Label distributions using bar plots.
+- Visualized feature distributions and label balance using `seaborn`.
+- Correlation heatmaps to identify relationships between features.
 
 ---
 
-### 3. **Model Training**
+### 3. Model Training
 
-- **MLPClassifier**: Best-performing model with hyperparameters:
-  - Solver: `adam`
-  - Hidden Layers: `(200, 100, 55)`
-  - Activation: `tanh`
-  - Max Iterations: `50`
-
-**Code Snippet**:
-
-```python
-from sklearn.neural_network import MLPClassifier
-mlp = MLPClassifier(hidden_layer_sizes=(200, 100, 55), activation='tanh', max_iter=50)
-mlp.fit(X_train_scaled, y_train)
-```
-
+- **MLPClassifier**:
+  - Achieved ~77% accuracy.
+  - Chosen as the final model due to its superior performance and simplicity.
 - **LSTM**:
-  - Time-series model with 64 LSTM units and dropout regularization.
-  - Used for analyzing temporal dependencies in force data.
 
-**Code Snippet**:
+  - Used for time-series analysis but underperformed (~33% accuracy).
 
-```python
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, Dense, Dropout
-
-model = Sequential([
-    LSTM(64, activation='tanh', input_shape=(X_train.shape[1], X_train.shape[2])),
-    Dropout(0.2),
-    Dense(32, activation='relu'),
-    Dense(num_classes, activation='softmax')
-])
-```
+- **DNN**:
+  - Achieved ~72% accuracy, moderately competitive.
 
 ---
 
-### 4. **Model Evaluation**
+### 4. Model Evaluation
 
-- **Metrics Used**:
-  - Accuracy, Precision, Recall, F1-Score.
-  - Confusion Matrix for class-wise performance.
+**Metrics Used**:
 
-**Evaluation Results**:
-
-- **MLPClassifier Accuracy**: ~95%
-- **LSTM Accuracy**: ~92%
+- Accuracy, Precision, Recall, F1-Score.
+- Confusion Matrix for class-wise performance.
 
 ---
 
-### 5. **Model Deployment**
+### 5. Model Deployment
 
-- Saved the trained **MLPClassifier** using `joblib`.
-- Recreated preprocessing pipeline (scaler, label encoder) for new predictions.
+- **Saved the model**:
 
-**Saving the Model**:
+  ```python
+  import joblib
+  joblib.dump(mlp, "mlp_classifier_model.joblib")
+  ```
 
-```python
-import joblib
-joblib.dump(mlp, "mlp_classifier_model.joblib")
-```
+- **Used for predictions**:
 
-**Loading and Predicting**:
+  ```python
+  # Load the model
+  loaded_model = joblib.load("mlp_classifier_model.joblib")
 
-```python
-# Load the model
-loaded_model = joblib.load("mlp_classifier_model.joblib")
+  # Scale new data
+  new_data_scaled = scaler.transform(new_data)
 
-# Predict new data
-predictions = loaded_model.predict(new_data_scaled)
-```
+  # Predict
+  predictions = loaded_model.predict(new_data_scaled)
+  ```
 
 ---
 
 ## Results and Insights
 
-- The **MLPClassifier** outperformed other models in terms of accuracy and simplicity.
-- The project demonstrates how gait phase analysis can be approached using force data.
-- Future improvements include:
-  - Collecting more data for better generalization.
-  - Exploring additional advanced models like `XGBoost`.
+- **MLPClassifier** performed the best, demonstrating the effectiveness of neural networks in analyzing force data.
+- **Deep Learning models (DNNs, LSTM)** require more extensive time-series data and configurations for improvement.
 
 ---
 
@@ -188,8 +175,8 @@ predictions = loaded_model.predict(new_data_scaled)
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/username/gait-phase-analysis.git
-   cd gait-phase-analysis
+   git clone https://github.com/arifhaidari/gait_phase_analysis.git
+   cd gait_phase_analysis
    ```
 
 2. Install dependencies:
@@ -198,41 +185,24 @@ predictions = loaded_model.predict(new_data_scaled)
    pip install -r requirements.txt
    ```
 
-3. Run the preprocessing and training notebook:
-
-   ```bash
-   jupyter notebook notebooks/preprocessing_and_training.ipynb
-   ```
-
-4. Use the trained model for predictions:
-   ```bash
-   jupyter notebook notebooks/prediction.ipynb
-   ```
-
 ---
 
 ## Future Work
 
-- Extend the project to predict actual gait phases (`Stance`, `Swing`, etc.).
-- Incorporate additional sensor data (e.g., accelerometers).
-- Deploy the model as an API using Flask or FastAPI.
+- Extend the project to predict specific gait phases (`Stance`, `Swing`, etc.).
+- Incorporate additional sensor data (e.g., accelerometer, gyroscope).
+- Deploy the trained model as an API using Flask or FastAPI.
+- Optimize hyperparameters for deep learning models.
 
 ---
 
 ## Acknowledgments
 
-This project was developed by going through material in domain knowledge, articles (some of materials are linked below) and dataset and similar projects and also with guidance and context provided through interactions with ChatGPT, ensuring best practices in machine learning and deep learning.
+This project was developed using:
 
-external material for reference:
-https://www.mad.tf.fau.de/research/activitynet/gaitphase-database/
-
-material (papers, research, articles) for learning and getting inspired while doing this project:
-https://drive.google.com/file/d/1gC5iiZM9-A_a0_9x29eDBw9qMCljv4Vy/view
-
-https://my.clevelandclinic.org/health/diseases/21092-gait-disorders
-
-https://pubmed.ncbi.nlm.nih.gov/15519595/
-
-https://www.quora.com/Is-a-gait-analysis-worth-it-how-can-you-actually-change-the-way-you-walk
-
-https://drive.google.com/file/d/1RJ61RvPTUiW51z1Ok4OJdbaEoWhr95ZF/view
+- [GaitPhase Database](https://www.mad.tf.fau.de/research/activitynet/gaitphase-database/)
+- Domain knowledge, research papers, and external references:
+  - [Gait Disorders](https://my.clevelandclinic.org/health/diseases/21092-gait-disorders)
+  - [Gait Analysis - PubMed](https://pubmed.ncbi.nlm.nih.gov/15519595/)
+  - [Additional Research](https://drive.google.com/file/d/1gC5iiZM9-A_a0_9x29eDBw9qMCljv4Vy/view)
+  - Developed with guidance and context provided through interactions with **ChatGPT**.
