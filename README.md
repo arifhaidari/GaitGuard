@@ -75,19 +75,29 @@ The dataset was sourced from the **GaitPhase Database** and includes data collec
 ## Project Structure
 
 ```
-├── data/
-│   ├── GP1_0.6_force.csv
-│   ├── GP1_0.7_force.csv
-│   ├── GP1_0.8_force.csv
-├── notebooks/
-│   ├── preprocessing_and_training.ipynb
-│   ├── prediction.ipynb
-├── models/
-│   ├── mlp_classifier_model.joblib
-│   ├── scaler.joblib
-│   ├── label_encoder.joblib
+.
 ├── README.md
-└── requirements.txt
+├── dataset
+│   ├── GP1_0.6_force.csv
+│   ├── GP1_0.6_marker.csv
+│   ├── GP1_0.6_oversteps.csv
+│   ├── GP1_0.7_force.csv
+│   └── GP1_0.8_force.csv
+├── info.txt
+├── models
+│   ├── info.txt
+│   └── mlp_classifier_model.joblib
+├── notebook
+│   ├── 0-neural_network_and_deep_learning.ipynb
+│   ├── 1-binary_classification.ipynb
+│   ├── 2-multi_classification.ipynb
+│   ├── 3-advance_model_LSTM.ipynb
+│   └── 4-regression_model.ipynb
+├── reports
+│   └── data.md
+├── requirements.txt
+└── src
+    └── info.txt
 ```
 
 ---
