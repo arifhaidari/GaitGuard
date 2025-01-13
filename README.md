@@ -94,6 +94,7 @@ The dataset was sourced from the **GaitPhase Database** and includes data collec
 │   ├── 3-advance_model_LSTM.ipynb
 │   └── 4-regression_model.ipynb
 ├── reports
+│   ├── GaitPhase_Desc.pdf
 │   └── data.md
 ├── requirements.txt
 └── src
